@@ -1,6 +1,5 @@
-# FEdMode
-、、、cpp
-## 你需要实现下面的接口 在自己的代码中
+## 你需要在自己的代码中实现下面的接口
+
 class FBuildEdMode : public FEdMode
 {
 public:
@@ -13,16 +12,16 @@ public:
     virtual void Enter() override;
     virtual void Exit() override;
 	
-	virtual bool UsesToolkits() const override { return true; }
+    virtual bool UsesToolkits() const override { return true; }
 	
-	const static FText GetDisplayName() { return NSLOCTEXT("BuildEdMode", "DisplayName", "Build Mode"); }
-}
+    const static FText GetDisplayName() { return NSLOCTEXT("BuildEdMode", "DisplayName", "Build Mode"); }
+};
 
 const FEditorModeID FBuildEdMode::EM_BuildEdModeId = TEXT("EM_BuildEdMode");
 
 void FBuildEdMode::Enter()
 {
-	FEdMode::Enter();
+    FEdMode::Enter();
 
     BuildTool = MakeShareable(new FBuildTool());
 
@@ -32,32 +31,28 @@ void FBuildEdMode::Enter()
         StaticCastSharedPtr<FBuildEdModeToolkit>(Toolkit)->Initialize(Owner->GetToolkitHost(), BuildTool);
     }
 }
+## FModeToolkit 需要实现下面的接口用于 UI 显示
 
-、、、
-
-# FModeToolkit
-
-、、、cpp
-## FModeToolkit 需要实现下面的接口用于UI显示
 class FBuildEdModeToolkit : public FModeToolkit
 {
 public:
-    void Initialize(const TSharedPtr<IToolkitHost>& InitToolkitHost , const TSharedPtr<class FBuildTool>& BuildTool);
-	//void Init(const TSharedPtr<IToolkitHost>& InitToolkitHost);
-    //virtual FName GetToolkitFName() const override;
+    void Initialize(const TSharedPtr<IToolkitHost>& InitToolkitHost, const TSharedPtr<class FBuildTool>& BuildTool);
+
     virtual FText GetBaseToolkitName() const override;
     virtual FEdMode* GetEditorMode() const override;
     virtual TSharedPtr<SWidget> GetInlineContent() const override;
+
 private:
-    TSharedPtr<class SWidget> BuildUIWidget;
-
+    TSharedPtr<SWidget> BuildUIWidget;
     TSharedPtr<SCompoundWidget> ToolkitWidget;
-}
+};
 
-void FBuildEdModeToolkit::Initialize(const TSharedPtr<IToolkitHost>& InitToolkitHost,const TSharedPtr<FBuildTool>& BuildTool)
+void FBuildEdModeToolkit::Initialize(const TSharedPtr<IToolkitHost>& InitToolkitHost, const TSharedPtr<FBuildTool>& BuildTool)
 {
     ToolkitWidget = SNew(SBuildToolkitWidget).BuildTool(BuildTool); // 使用自定义 SCompoundWidget
+
     FModeToolkit::Init(InitToolkitHost);
+
     BuildUIWidget =
         SNew(SBox)
         .WidthOverride(200)
@@ -66,11 +61,6 @@ void FBuildEdModeToolkit::Initialize(const TSharedPtr<IToolkitHost>& InitToolkit
             ToolkitWidget.ToSharedRef()
         ];
 }
-
-//FName FBuildEdModeToolkit::GetToolkitFName() const
-//{
-//    return FName("BuildEdMode");
-//}
 
 FText FBuildEdModeToolkit::GetBaseToolkitName() const
 {
@@ -86,11 +76,8 @@ TSharedPtr<SWidget> FBuildEdModeToolkit::GetInlineContent() const
 {
     return BuildUIWidget;
 }
-、、、
+## UI 界面相关
 
-# SCompoundWidget
-、、、cpp
-# UI界面相关
 class SBuildToolkitWidget : public SCompoundWidget
 {
 public:
@@ -99,7 +86,12 @@ public:
     SLATE_END_ARGS()
 
     void Construct(const FArguments& InArgs);
-}
+
+private:
+    TSharedPtr<class FBuildTool> BuildTool;
+
+    void OnResourceSelected(const FAssetData& AssetData);
+};
 
 void SBuildToolkitWidget::Construct(const FArguments& InArgs)
 {
@@ -121,5 +113,3 @@ void SBuildToolkitWidget::Construct(const FArguments& InArgs)
             ]
     ];
 }
-
-、、、
