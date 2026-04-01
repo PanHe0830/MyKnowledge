@@ -1,5 +1,5 @@
 ## 你需要在自己的代码中实现下面的接口
-
+``` C++
 class FBuildEdMode : public FEdMode
 {
 public:
@@ -31,8 +31,9 @@ void FBuildEdMode::Enter()
         StaticCastSharedPtr<FBuildEdModeToolkit>(Toolkit)->Initialize(Owner->GetToolkitHost(), BuildTool);
     }
 }
+```
 ## FModeToolkit 需要实现下面的接口用于 UI 显示
-
+``` C++
 class FBuildEdModeToolkit : public FModeToolkit
 {
 public:
@@ -76,8 +77,9 @@ TSharedPtr<SWidget> FBuildEdModeToolkit::GetInlineContent() const
 {
     return BuildUIWidget;
 }
+```
 ## UI 界面相关
-
+``` C++
 class SBuildToolkitWidget : public SCompoundWidget
 {
 public:
@@ -113,3 +115,4 @@ void SBuildToolkitWidget::Construct(const FArguments& InArgs)
             ]
     ];
 }
+```
